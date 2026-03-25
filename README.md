@@ -112,6 +112,20 @@ Job **docker_build** / **docker_push** используют сервис **docke
 
 Файл `.github/workflows/ci.yml` дублирует логику для **pull request** и пушей в `main`/`master`. Job **docker_push** выполняется после успешного **docker_build**; без настроенных secrets шаг проверки секретов завершится с ошибкой.
 
+## Первая выгрузка на GitHub ([Atamurat2004](https://github.com/Atamurat2004))
+
+1. Создайте **новый пустой** репозиторий на GitHub (без README, `.gitignore` и лиценции), например имя **`lab-1`**: [github.com/new](https://github.com/new).
+2. В каталоге проекта на своём ПК выполните (подставьте имя репозитория, если выбрали другое):
+
+```bash
+git remote add origin https://github.com/Atamurat2004/lab-1.git
+git push -u origin main
+```
+
+3. При запросе логина GitHub используйте **Personal Access Token** вместо пароля ([создание токена](https://github.com/settings/tokens)) с правом **repo**, либо войдите через **Git Credential Manager** / **GitHub Desktop**.
+
+После пуша откройте вкладку **Actions** в репозитории и при необходимости добавьте секреты Docker Hub (см. выше).
+
 ---
 
 При необходимости замените демо-приложение своим кодом из прошлой работы по Docker, сохранив контракты: `requirements*.txt`, `Dockerfile`, тесты с покрытием ≥ 50%, конфигурацию ruff и описанные переменные CI.
