@@ -1,0 +1,16 @@
+.git
+.github
+.gitlab-ci.yml
+__pycache__
+*.pyc
+.pytest_cache
+.coverage
+htmlcov
+.ruff_cache
+.venv
+venv
+*.md
+tests
+requirements-dev.txt
+pyproject.toml
+image.tar
