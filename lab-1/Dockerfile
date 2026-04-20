@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-# Явный bookworm + обновление пакетов ОС снижают число CVE в базовом слое (в т.ч. «critical» у сканеров).
 FROM python:3.12-slim-bookworm AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -19,7 +17,7 @@ RUN python -m pip install --upgrade pip \
 
 COPY app ./app
 
-RUN chown -R nobody:nobody /app
+RUN chown -R nobody:nogroup /app
 
 EXPOSE 8000
 

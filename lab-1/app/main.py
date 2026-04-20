@@ -18,3 +18,9 @@ def root() -> dict[str, str]:
 def add(a: int, b: int) -> int:
     """Чистая функция для unit-тестов и покрытия веток."""
     return a + b
+
+
+
+
+
+
