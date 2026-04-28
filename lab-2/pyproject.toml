@@ -1,5 +1,5 @@
 [project]
-name = "lab1-app"
+name = "lab2-app"
 version = "1.0.0"
 description = "Практическая работа: приложение с CI/CD"
 readme = "README.md"

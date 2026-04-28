@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-app = FastAPI(title="Lab-1", version="1.0.0")
+app = FastAPI(title="Lab-2", version="1.0.0")
 
 
 @app.get("/health")
@@ -12,7 +12,7 @@ def health() -> dict[str, str]:
 @app.get("/")
 def root() -> dict[str, str]:
     """Корневой маршрут."""
-    return {"message": "Lab-1 distributed data processing"}
+    return {"message": "Lab-2 distributed data processing"}
 
 
 def add(a: int, b: int) -> int:

@@ -18,7 +18,7 @@ async def test_root():
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         response = await client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Lab-1 distributed data processing"}
+    assert response.json() == {"message": "Lab-2 distributed data processing"}
 
 
 def test_add():
