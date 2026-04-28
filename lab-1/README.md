@@ -1,24 +1,24 @@
-# Lab-1: Production-like Docker CRUD API
+﻿# Lab-1: Sports Store Inventory (Docker)
 
 Полноценный демонстрационный проект для защиты лабораторной:
 
-- `web` — FastAPI API для управления задачами;
+- `web` — FastAPI API + веб-страница для управления товарами спорт-магазина;
 - `db` — PostgreSQL с инициализацией схемы;
-- оба компонента в отдельных контейнерах внутри одной Docker-сети;
-- доступ снаружи открыт только к API (`8000`), база не публикует порт.
+- оба компонента работают в отдельных контейнерах в одной Docker-сети;
+- наружу открыт только API (`8000`), БД не публикует порт.
 
-## Что сделано на уровне "как в реальном проекте"
+## Что реализовано
 
 - Слоистая архитектура: `config -> database(pool) -> repository -> service -> api`.
-- Typed-схемы и валидация (`pydantic`), enum-статусы задач, пагинация и фильтрация.
+- Валидация входных данных (`pydantic`), фильтрация и пагинация.
 - Health endpoints:
-  - `GET /health/live` — liveness;
-  - `GET /health/ready` — readiness с проверкой БД.
-- Единообразные ошибки API (например, `404 Task not found`).
-- PostgreSQL: индексы, `created_at/updated_at`, автообновление `updated_at` через trigger.
-- Multi-stage Dockerfile приложения + запуск под non-root пользователем.
-- Docker Compose: отдельная bridge-сеть, healthcheck для web/db, volume у БД, `restart`.
-- Тесты (`pytest`): API-сценарий CRUD + сервисный слой.
+  - `GET /health/live` — жив ли сервис;
+  - `GET /health/ready` — готов ли сервис + есть ли соединение с БД.
+- Единый формат ошибок API (`404` и т.д.).
+- PostgreSQL: индексы, поля `created_at`/`updated_at`, trigger на `updated_at`.
+- Multi-stage Dockerfile и non-root пользователь в `web` контейнере.
+- Docker Compose: bridge-сеть, healthcheck, volume у БД, restart policy.
+- Тесты (`pytest`) для API и сервисного слоя.
 
 ## Структура
 
@@ -62,64 +62,55 @@ docker compose up --build
 
 3) Открой:
 
+- Web UI: `http://localhost:8000/`
 - API docs: `http://localhost:8000/docs`
 - Liveness: `http://localhost:8000/health/live`
 - Readiness: `http://localhost:8000/health/ready`
 
-## API Demo Script (для показа преподавателю)
+## API Demo Script (товары спорт-магазина)
 
-### 1. Создать задачу
+### 1. Добавить товар
 
 ```bash
-curl -X POST http://localhost:8000/tasks \
+curl -X POST http://localhost:8000/products \
   -H "Content-Type: application/json" \
   -d '{
-        "title":"Prepare lab defense",
-        "description":"Show docker architecture and CRUD flow",
+        "title":"Nike Running Shoes",
+        "description":"Footwear",
         "priority":2,
-        "due_date":"2026-05-10",
         "status":"todo"
       }'
 ```
 
-### 2. Получить список (с пагинацией)
+`status` значения:
+- `todo` = `in_stock`
+- `in_progress` = `low_stock`
+- `done` = `out_of_stock`
+
+### 2. Получить список товаров
 
 ```bash
-curl "http://localhost:8000/tasks?limit=10&offset=0"
+curl "http://localhost:8000/products?limit=10&offset=0"
 ```
 
-### 3. Фильтрация и поиск
+### 3. Поиск/фильтрация
 
 ```bash
-curl "http://localhost:8000/tasks?status=todo&search=Prepare"
+curl "http://localhost:8000/products?status=todo&search=Nike"
 ```
 
-### 4. Полное обновление (PUT)
+### 4. Частично обновить товар (PATCH)
 
 ```bash
-curl -X PUT http://localhost:8000/tasks/1 \
+curl -X PATCH http://localhost:8000/products/1 \
   -H "Content-Type: application/json" \
-  -d '{
-        "title":"Prepare lab defense (updated)",
-        "description":"Add docker logs and readiness checks",
-        "priority":1,
-        "due_date":"2026-05-12",
-        "status":"in_progress"
-      }'
+  -d '{"status":"in_progress"}'
 ```
 
-### 5. Частичное обновление (PATCH)
+### 5. Удалить товар
 
 ```bash
-curl -X PATCH http://localhost:8000/tasks/1 \
-  -H "Content-Type: application/json" \
-  -d '{"status":"done"}'
-```
-
-### 6. Удаление
-
-```bash
-curl -i -X DELETE http://localhost:8000/tasks/1
+curl -i -X DELETE http://localhost:8000/products/1
 ```
 
 ## Локальные тесты
@@ -137,7 +128,7 @@ pytest
 docker compose down
 ```
 
-С полным удалением данных БД:
+Полная очистка (включая данные БД):
 
 ```bash
 docker compose down -v
@@ -145,10 +136,10 @@ docker compose down -v
 
 ## Проверка по чеклисту задания
 
-- Организована docker-сеть (`lab1-network`, bridge).
-- Web и DB работают в отдельных контейнерах.
-- Билд воспроизводимый (никаких внешних артефактов не требуется).
+- Есть docker-сеть (`lab1-network`, bridge).
+- Web и DB в разных контейнерах.
+- Билд воспроизводим на чистом окружении.
 - `Dockerfile` приложения multi-stage.
-- Доступ извне только к API (порт БД не проброшен).
-- Для БД используется volume (`postgres_data`).
-- Секреты не хардкодятся в `Dockerfile`/`docker-compose`, используются env-переменные.
+- Внешний доступ только к API, без проброса порта БД.
+- У БД настроен volume (`postgres_data`).
+- Секреты не хардкодятся в Dockerfile/compose, берутся из env.
