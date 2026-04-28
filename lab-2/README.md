@@ -112,19 +112,4 @@ Job **docker_build** / **docker_push** используют сервис **docke
 
 Файл в корне `.github/workflows/ci.yml` дублирует логику для **pull request** и пушей в `main`/`master`. Job **docker_push** выполняется после успешного **docker_build**; без настроенных secrets шаг проверки секретов завершится с ошибкой.
 
-## Репозиторий на GitHub
-
-Проект выгружается в монорепозиторий **[TROD-2026](https://github.com/Atamurat2004/TROD-2026)**. Клонирование и push — из **корня** репозитория (не из `lab-2/`):
-
-```bash
-git clone https://github.com/Atamurat2004/TROD-2026.git
-cd TROD-2026
-git remote add origin https://github.com/Atamurat2004/TROD-2026.git   # если ещё не добавлен
-git push -u origin main
-```
-
-Для аутентификации используйте **Personal Access Token** ([настройка токена](https://github.com/settings/tokens), scope **repo**) или Git Credential Manager.
-
----
-
 При необходимости замените демо-приложение своим кодом из прошлой работы по Docker, сохранив контракты: `requirements*.txt`, `Dockerfile`, тесты с покрытием ≥ 50%, конфигурацию ruff и описанные переменные CI.
