@@ -1,4 +1,4 @@
-﻿from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from src.errors import TaskNotFoundError
 from src.schemas import TaskCreate, TaskStatus, TaskUpdate
@@ -15,8 +15,8 @@ class RepoStub:
                 "priority": 3,
                 "due_date": None,
                 "status": "todo",
-                "created_at": datetime.now(timezone.utc),
-                "updated_at": datetime.now(timezone.utc),
+                "created_at": datetime.now(UTC),
+                "updated_at": datetime.now(UTC),
             }
         }
 
@@ -34,8 +34,8 @@ class RepoStub:
             "priority": payload.priority,
             "due_date": payload.due_date,
             "status": payload.status.value,
-            "created_at": datetime.now(timezone.utc),
-            "updated_at": datetime.now(timezone.utc),
+            "created_at": datetime.now(UTC),
+            "updated_at": datetime.now(UTC),
         }
 
     def replace_task(self, task_id, _payload):
