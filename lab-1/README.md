@@ -21,6 +21,9 @@ lab-1/
 ├── db/
 │   ├── Dockerfile
 │   └── init.sql
+├── nginx/
+│   ├── Dockerfile
+│   └── nginx.conf
 ├── docker-compose.yml
 ├── .env.example
 └── .gitignore
@@ -40,19 +43,21 @@ Copy-Item .env.example .env
 docker compose up --build
 ```
 
-3) Открой:
+3) Открой (весь HTTP идёт через **nginx**, приложение снаружи не слушает порт `8000`):
 
-- Web UI: `http://localhost:8000/`
-- API docs: `http://localhost:8000/docs`
-- Liveness: `http://localhost:8000/health/live`
-- Readiness: `http://localhost:8000/health/ready`
+- Web UI: `http://localhost:8080/`
+- API docs: `http://localhost:8080/docs`
+- Liveness: `http://localhost:8080/health/live`
+- Readiness: `http://localhost:8080/health/ready`
+
+Порт хоста задаётся в `docker-compose.yml` (`8080:80`). При необходимости замени `8080` на другой свободный порт.
 
 ## API Demo Script (товары спорт-магазина)
 
 ### 1. Добавить товар
 
 ```bash
-curl -X POST http://localhost:8000/products \
+curl -X POST http://localhost:8080/products \
   -H "Content-Type: application/json" \
   -d '{
         "title":"Nike Running Shoes",
@@ -71,19 +76,19 @@ curl -X POST http://localhost:8000/products \
 ### 2. Получить список товаров
 
 ```bash
-curl "http://localhost:8000/products?limit=10&offset=0"
+curl "http://localhost:8080/products?limit=10&offset=0"
 ```
 
 ### 3. Поиск/фильтрация
 
 ```bash
-curl "http://localhost:8000/products?status=todo&search=Nike"
+curl "http://localhost:8080/products?status=todo&search=Nike"
 ```
 
 ### 4. Частично обновить товар (PATCH)
 
 ```bash
-curl -X PATCH http://localhost:8000/products/1 \
+curl -X PATCH http://localhost:8080/products/1 \
   -H "Content-Type: application/json" \
   -d '{"status":"in_progress"}'
 ```
@@ -91,7 +96,7 @@ curl -X PATCH http://localhost:8000/products/1 \
 ### 5. Удалить товар
 
 ```bash
-curl -i -X DELETE http://localhost:8000/products/1
+curl -i -X DELETE http://localhost:8080/products/1
 ```
 
 ## Локальные тесты
