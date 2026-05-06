@@ -10,3 +10,7 @@ image.tar
 *.egg-info/
 dist/
 build/
+
+# Локальные черновики и служебные файлы
+cursor_*.md
+*.cursorworktrees*
