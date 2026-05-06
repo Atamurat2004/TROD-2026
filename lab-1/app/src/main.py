@@ -1,4 +1,4 @@
-﻿from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, Query, Request
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -238,7 +238,9 @@ def list_products(
     return service.list_tasks(status=status, search=search, limit=limit, offset=offset)
 
 
-@app.get("/products/{product_id}", response_model=TaskRead, responses={404: {"model": ErrorResponse}}, tags=["products"])
+@app.get(
+    "/products/{product_id}", response_model=TaskRead, responses={404: {"model": ErrorResponse}}, tags=["products"]
+)
 def get_product(product_id: int, service: TaskService = Depends(get_task_service)):
     return service.get_task(product_id)
 
@@ -248,12 +250,16 @@ def create_product(payload: TaskCreate, service: TaskService = Depends(get_task_
     return service.create_task(payload)
 
 
-@app.put("/products/{product_id}", response_model=TaskRead, responses={404: {"model": ErrorResponse}}, tags=["products"])
+@app.put(
+    "/products/{product_id}", response_model=TaskRead, responses={404: {"model": ErrorResponse}}, tags=["products"]
+)
 def replace_product(product_id: int, payload: TaskReplace, service: TaskService = Depends(get_task_service)):
     return service.replace_task(product_id, payload)
 
 
-@app.patch("/products/{product_id}", response_model=TaskRead, responses={404: {"model": ErrorResponse}}, tags=["products"])
+@app.patch(
+    "/products/{product_id}", response_model=TaskRead, responses={404: {"model": ErrorResponse}}, tags=["products"]
+)
 def patch_product(product_id: int, payload: TaskUpdate, service: TaskService = Depends(get_task_service)):
     return service.update_task(product_id, payload)
 

@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: lab-1
+        working-directory: lab-1/app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -38,13 +38,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Verify bytecode compile
-        run: python -m compileall -q app
+        run: python -m compileall -q src
 
   lint:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: lab-1
+        working-directory: lab-1/app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: lab-1
+        working-directory: lab-1/app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -76,7 +76,7 @@ jobs:
       - name: Pytest with coverage
         run: |
           pytest \
-            --cov=app \
+            --cov=src \
             --cov-report=term \
             --cov-report=html \
             --cov-report=xml \
@@ -85,13 +85,13 @@ jobs:
         if: always()
         with:
           name: coverage-html-lab1
-          path: lab-1/htmlcov/
+          path: lab-1/app/htmlcov/
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: coverage-xml-lab1
-          path: lab-1/coverage.xml
+          path: lab-1/app/coverage.xml
 
   docker_build:
     runs-on: ubuntu-latest
@@ -103,11 +103,11 @@ jobs:
         run: echo "short=${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Build image
+      - name: Build web image
         uses: docker/build-push-action@v6
         with:
-          context: ./lab-1
-          file: ./lab-1/Dockerfile
+          context: ./lab-1/app
+          file: ./lab-1/app/Dockerfile
           push: false
           tags: |
             ${{ env.DOCKER_IMAGE_LOCAL }}:${{ steps.sha.outputs.short }}

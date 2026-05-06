@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from fastapi.testclient import TestClient
 
@@ -32,7 +32,7 @@ class InMemoryService:
         return item
 
     def create_task(self, payload: TaskCreate):
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         item = TaskRead(
             id=self._next_id,
             title=payload.title,
@@ -56,7 +56,7 @@ class InMemoryService:
                 "priority": payload.priority,
                 "due_date": payload.due_date,
                 "status": payload.status,
-                "updated_at": datetime.now(timezone.utc),
+                "updated_at": datetime.now(UTC),
             }
         )
         self._items[task_id] = item
@@ -65,7 +65,7 @@ class InMemoryService:
     def update_task(self, task_id: int, payload: TaskUpdate):
         current = self.get_task(task_id)
         update_data = payload.model_dump(exclude_unset=True, exclude_none=True)
-        item = current.model_copy(update={**update_data, "updated_at": datetime.now(timezone.utc)})
+        item = current.model_copy(update={**update_data, "updated_at": datetime.now(UTC)})
         self._items[task_id] = item
         return item
 
