@@ -66,6 +66,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}/lab-1/app
     defaults:
       run:
         working-directory: lab-1/app

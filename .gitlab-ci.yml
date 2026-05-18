@@ -50,6 +50,8 @@ lint:
 test:
   extends: .default_python
   stage: test
+  variables:
+    PYTHONPATH: "${CI_PROJECT_DIR}/lab-1/app"
   script:
     - >
       pytest
