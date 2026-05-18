@@ -7,8 +7,6 @@ lab-1/
 ├── app/
 │   ├── Dockerfile
 │   ├── requirements.txt
-│   ├── requirements-dev.txt
-│   ├── pyproject.toml
 │   ├── src/
 │   │   ├── config.py
 │   │   ├── database.py
@@ -99,14 +97,19 @@ curl -X PATCH http://localhost:8080/products/1 \
 curl -i -X DELETE http://localhost:8080/products/1
 ```
 
-## Локальные тесты
+## Локальные тесты и линтер (lab-2)
 
-```bash
+Проверки CI настроены в каталоге [**lab-2**](../lab-2/README.md). Из `lab-1/app`:
+
+```powershell
 cd app
 python -m pip install --upgrade pip
-pip install -r requirements.txt -r requirements-dev.txt
-pytest
+pip install -r requirements.txt -r ..\..\lab-2\requirements-dev.txt
+ruff check . --config ..\..\lab-2\pyproject.toml
+pytest --cov=src --cov-config=..\..\lab-2\pyproject.toml --cov-fail-under=50
 ```
+
+Полный стек: `docker compose up --build` из корня `lab-1/`.
 
 ## Остановка
 

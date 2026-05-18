@@ -1,4 +1,5 @@
-# CI/CD: lab-1 (app) в монорепозитории TROD-2026. Секреты: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
+# CI/CD (lab-2): lint, test, coverage и Docker для приложения lab-1/app.
+# Секреты: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
 # Опционально: DOCKER_IMAGE_NAME (по умолчанию lab1-app)
 
 workflow:
@@ -21,40 +22,39 @@ variables:
   DOCKER_TLS_CERTDIR: ""
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
-  LAB_DIR: "lab-1/app"
+  APP_DIR: "lab-1/app"
+  LAB2_DIR: "lab-2"
+  RUFF_CONFIG: "lab-2/pyproject.toml"
+  COVERAGE_CONFIG: "lab-2/pyproject.toml"
 
 .default_python:
   image: python:3.12-slim
+  before_script:
+    - cd "$APP_DIR"
+    - python -m pip install --upgrade pip
+    - python -m pip install -r requirements.txt -r "../../$LAB2_DIR/requirements-dev.txt"
 
 build:
   extends: .default_python
   stage: build
   script:
-    - cd "$LAB_DIR"
-    - python -m pip install --upgrade pip
-    - python -m pip install -r requirements.txt
     - python -m compileall -q src
 
 lint:
   extends: .default_python
   stage: lint
   script:
-    - cd "$LAB_DIR"
-    - python -m pip install --upgrade pip
-    - python -m pip install -r requirements-dev.txt
-    - ruff check .
-    - ruff format --check .
+    - ruff check . --config "../../$RUFF_CONFIG"
+    - ruff format --check . --config "../../$RUFF_CONFIG"
 
 test:
   extends: .default_python
   stage: test
   script:
-    - cd "$LAB_DIR"
-    - python -m pip install --upgrade pip
-    - python -m pip install -r requirements-dev.txt
     - >
       pytest
       --cov=src
+      --cov-config="../../$COVERAGE_CONFIG"
       --cov-report=term
       --cov-report=html
       --cov-report=xml

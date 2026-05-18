@@ -1,41 +1,25 @@
-[project]
-name = "lab2-app"
-version = "1.0.0"
-description = "Практическая работа: приложение с CI/CD"
-readme = "README.md"
-requires-python = ">=3.12"
+# Конфигурация CI (lint, pytest, coverage) для приложения lab-1/app.
+# Команды выполняются из каталога lab-1/app (см. README).
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
 
 [tool.ruff]
 target-version = "py312"
-line-length = 100
-src = ["app", "tests"]
+line-length = 120
+src = ["src", "tests"]
 
 [tool.ruff.lint]
-select = [
-    "E",   # pycodestyle errors
-    "W",   # pycodestyle warnings
-    "F",   # pyflakes
-    "I",   # isort
-    "UP",  # pyupgrade
-    "B",   # flake8-bugbear
-]
-ignore = []
+select = ["E", "W", "F", "I", "UP", "B"]
 
-[tool.ruff.format]
-quote-style = "double"
-
-[tool.pytest.ini_options]
-pythonpath = ["."]
-testpaths = ["tests"]
-asyncio_mode = "auto"
-addopts = "-q --strict-markers"
+[tool.ruff.lint.per-file-ignores]
+"src/main.py" = ["B008", "E501"]
 
 [tool.coverage.run]
-source = ["app"]
+source = ["src"]
 branch = true
-omit = []
 
 [tool.coverage.report]
 fail_under = 50
 show_missing = true
-skip_covered = false

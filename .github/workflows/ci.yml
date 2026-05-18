@@ -1,12 +1,14 @@
-# CI для lab-1 (монорепозиторий TROD-2026). Secrets: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
+# CI/CD (lab-2) для приложения Sports Store из lab-1/app.
+# Secrets: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
 # Vars (optional): DOCKER_IMAGE_NAME (default lab1-app)
 
-name: CI/CD (lab-1)
+name: CI/CD (lab-2)
 
 on:
   pull_request:
     paths:
       - "lab-1/**"
+      - "lab-2/**"
       - ".github/workflows/ci.yml"
       - ".gitlab-ci.yml"
   push:
@@ -15,12 +17,15 @@ on:
       - master
     paths:
       - "lab-1/**"
+      - "lab-2/**"
       - ".github/workflows/ci.yml"
       - ".gitlab-ci.yml"
 
 env:
   DOCKER_IMAGE_LOCAL: lab1-app
   PYTHON_VERSION: "3.12"
+  APP_DIR: lab-1/app
+  LAB2_DIR: lab-2
 
 jobs:
   build:
@@ -33,10 +38,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: Install runtime dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt -r ../../lab-2/requirements-dev.txt
       - name: Verify bytecode compile
         run: python -m compileall -q src
 
@@ -53,11 +58,11 @@ jobs:
       - name: Install dev tools
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-dev.txt
+          pip install -r requirements.txt -r ../../lab-2/requirements-dev.txt
       - name: Ruff check
-        run: ruff check .
+        run: ruff check . --config ../../lab-2/pyproject.toml
       - name: Ruff format
-        run: ruff format --check .
+        run: ruff format --check . --config ../../lab-2/pyproject.toml
 
   test:
     runs-on: ubuntu-latest
@@ -72,11 +77,12 @@ jobs:
       - name: Install dev dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-dev.txt
+          pip install -r requirements.txt -r ../../lab-2/requirements-dev.txt
       - name: Pytest with coverage
         run: |
           pytest \
             --cov=src \
+            --cov-config=../../lab-2/pyproject.toml \
             --cov-report=term \
             --cov-report=html \
             --cov-report=xml \
@@ -84,13 +90,13 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: coverage-html-lab1
+          name: coverage-html-lab2
           path: lab-1/app/htmlcov/
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: coverage-xml-lab1
+          name: coverage-xml-lab2
           path: lab-1/app/coverage.xml
 
   docker_build:
@@ -115,7 +121,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: docker-image-lab1
+          name: docker-image-lab2
           path: /tmp/image.tar
 
   docker_push:
@@ -132,7 +138,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: docker-image-lab1
+          name: docker-image-lab2
           path: .
       - name: Проверка секретов Docker Hub
         run: |
