@@ -1,6 +1,6 @@
-# CI/CD для lab-1: приложение Sports Store (код, Docker, lint, test, push образа).
+# CI/CD для отдельного репозитория: корень репо = содержимое lab-1/
+# Скопируйте в корень как .gitlab-ci.yml
 # Секреты: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
-# Опционально: DOCKER_IMAGE_NAME (по умолчанию lab1-app)
 
 workflow:
   rules:
@@ -22,7 +22,7 @@ variables:
   DOCKER_TLS_CERTDIR: ""
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
-  APP_DIR: "lab-1/app"
+  APP_DIR: "app"
 
 .default_python:
   image: python:3.12-slim
@@ -48,7 +48,7 @@ test:
   extends: .default_python
   stage: test
   variables:
-    PYTHONPATH: "${CI_PROJECT_DIR}/lab-1/app"
+    PYTHONPATH: "${CI_PROJECT_DIR}/app"
   script:
     - >
       pytest
@@ -62,12 +62,12 @@ test:
     when: always
     expire_in: 30 days
     paths:
-      - lab-1/app/htmlcov/
-      - lab-1/app/coverage.xml
+      - app/htmlcov/
+      - app/coverage.xml
     reports:
       coverage_report:
         coverage_format: cobertura
-        path: lab-1/app/coverage.xml
+        path: app/coverage.xml
 
 .docker_job:
   image: docker:27-cli
@@ -85,7 +85,7 @@ docker_build:
     - test
   script:
     - docker info
-    - docker build -f lab-1/app/Dockerfile -t "${DOCKER_IMAGE_LOCAL}:${CI_COMMIT_SHORT_SHA}" lab-1/app
+    - docker build -f app/Dockerfile -t "${DOCKER_IMAGE_LOCAL}:${CI_COMMIT_SHORT_SHA}" app
     - docker save "${DOCKER_IMAGE_LOCAL}:${CI_COMMIT_SHORT_SHA}" -o image.tar
   artifacts:
     paths:
@@ -101,7 +101,7 @@ docker_push:
   script:
     - |
       if [ -z "${DOCKERHUB_USERNAME:-}" ] || [ -z "${DOCKERHUB_TOKEN:-}" ]; then
-        echo "ERROR: задайте переменные CI DOCKERHUB_USERNAME и DOCKERHUB_TOKEN (masked, protected при необходимости)."
+        echo "ERROR: задайте CI-переменные DOCKERHUB_USERNAME и DOCKERHUB_TOKEN."
         exit 1
       fi
     - NAME="${DOCKER_IMAGE_NAME:-lab1-app}"

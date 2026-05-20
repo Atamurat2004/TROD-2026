@@ -1,6 +1,0 @@
-# Dev-зависимости для lint/test/coverage (приложение — lab-1/app).
-# Установка: pip install -r lab-1/app/requirements.txt -r lab-2/requirements-dev.txt
-pytest==8.3.3
-httpx==0.27.2
-ruff==0.8.4
-pytest-cov==6.0.0

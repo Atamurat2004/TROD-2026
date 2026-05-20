@@ -1,5 +1,5 @@
-# Конфигурация CI (lint, pytest, coverage) для приложения lab-1/app.
-# Команды выполняются из каталога lab-1/app (см. README).
+# Линтер, pytest и coverage для приложения Sports Store (lab-1).
+# Команды выполняются из каталога lab-1/app.
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

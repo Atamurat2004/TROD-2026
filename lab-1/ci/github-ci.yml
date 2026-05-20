@@ -1,36 +1,26 @@
-# CI/CD для lab-1: Sports Store (код + Docker + lint + test + push).
+# CI/CD для отдельного репозитория: корень репо = содержимое lab-1/
+# Скопируйте в .github/workflows/ci.yml
 # Secrets: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
-# Vars (optional): DOCKER_IMAGE_NAME (default lab1-app)
 
-name: CI/CD (lab-1)
+name: CI/CD (Sports Store)
 
 on:
   pull_request:
-    paths:
-      - "lab-1/**"
-      - ".github/workflows/ci.yml"
-      - ".gitlab-ci.yml"
   push:
     branches:
       - main
       - master
-      - "demo/**"
-    paths:
-      - "lab-1/**"
-      - ".github/workflows/ci.yml"
-      - ".gitlab-ci.yml"
 
 env:
   DOCKER_IMAGE_LOCAL: lab1-app
   PYTHON_VERSION: "3.12"
-  APP_DIR: lab-1/app
 
 jobs:
   build:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: lab-1/app
+        working-directory: app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -47,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: lab-1/app
+        working-directory: app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -65,10 +55,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      PYTHONPATH: ${{ github.workspace }}/lab-1/app
+      PYTHONPATH: ${{ github.workspace }}/app
     defaults:
       run:
-        working-directory: lab-1/app
+        working-directory: app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -90,12 +80,12 @@ jobs:
         if: always()
         with:
           name: coverage-html
-          path: lab-1/app/htmlcov/
+          path: app/htmlcov/
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: coverage-xml
-          path: lab-1/app/coverage.xml
+          path: app/coverage.xml
 
   docker_build:
     runs-on: ubuntu-latest
@@ -109,8 +99,8 @@ jobs:
       - name: Build web image
         uses: docker/build-push-action@v6
         with:
-          context: ./lab-1/app
-          file: ./lab-1/app/Dockerfile
+          context: ./app
+          file: ./app/Dockerfile
           push: false
           tags: |
             ${{ env.DOCKER_IMAGE_LOCAL }}:${{ steps.sha.outputs.short }}
@@ -139,7 +129,7 @@ jobs:
       - name: Проверка секретов Docker Hub
         run: |
           if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ]; then
-            echo "Задайте secrets репозитория: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN"
+            echo "Задайте secrets: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN"
             exit 1
           fi
       - uses: docker/login-action@v3

@@ -7,25 +7,19 @@ lab-1/
 ├── app/
 │   ├── Dockerfile
 │   ├── requirements.txt
+│   ├── requirements-dev.txt   # pytest, ruff, coverage (CI)
+│   ├── pyproject.toml           # ruff, pytest, coverage ≥ 50%
 │   ├── src/
-│   │   ├── config.py
-│   │   ├── database.py
-│   │   ├── errors.py
-│   │   ├── main.py
-│   │   ├── repository.py
-│   │   ├── schemas.py
-│   │   └── service.py
 │   └── tests/
 ├── db/
-│   ├── Dockerfile
-│   └── init.sql
 ├── nginx/
-│   ├── Dockerfile
-│   └── nginx.conf
+├── ci/                          # шаблоны .gitlab-ci.yml / GitHub Actions
 ├── docker-compose.yml
 ├── .env.example
 └── .gitignore
 ```
+
+**CI/CD** входит в эту же лабораторную: в монорепозитории пайплайн в корне ([`.gitlab-ci.yml`](../.gitlab-ci.yml), [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)). Для отдельного репозитория — см. [ci/README.md](ci/README.md).
 
 ## Быстрый старт
 
@@ -97,19 +91,22 @@ curl -X PATCH http://localhost:8080/products/1 \
 curl -i -X DELETE http://localhost:8080/products/1
 ```
 
-## Локальные тесты и линтер (lab-2)
+## Локальные тесты и линтер (как в CI)
 
-Проверки CI настроены в каталоге [**lab-2**](../lab-2/README.md). Из `lab-1/app`:
+Из каталога `lab-1/app`:
 
 ```powershell
 cd app
 python -m pip install --upgrade pip
-pip install -r requirements.txt -r ..\..\lab-2\requirements-dev.txt
-ruff check . --config ..\..\lab-2\pyproject.toml
-pytest --cov=src --cov-config=..\..\lab-2\pyproject.toml --cov-fail-under=50
+pip install -r requirements.txt -r requirements-dev.txt
+ruff check .
+ruff format --check .
+pytest --cov=src --cov-report=term --cov-fail-under=50
 ```
 
 Полный стек: `docker compose up --build` из корня `lab-1/`.
+
+Подробнее про пайплайн и выгрузку в отдельный репозиторий: [ci/README.md](ci/README.md).
 
 ## Остановка
 
