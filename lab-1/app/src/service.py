@@ -1,3 +1,5 @@
+import sys  # demo: intentional unused import for CI lint failure
+
 from src.errors import TaskNotFoundError
 from src.repository import TaskRepository
 from src.schemas import TaskCreate, TaskListResponse, TaskRead, TaskReplace, TaskStatus, TaskUpdate
