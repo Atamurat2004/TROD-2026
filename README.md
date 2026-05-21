@@ -4,10 +4,9 @@
 
 | Каталог | Содержание |
 |---------|------------|
-| [**lab-1/**](lab-1/README.md) | Sports Store: FastAPI, PostgreSQL, nginx, Docker **и CI/CD** (lint, pytest, coverage ≥ 50%, push образа) |
-| [**lab-3/**](lab-3/README.md) | Kafka: отзывы о спортивных товарах (порт **8081**, lab-1 — **8080**) |
-
-Каталог `lab-2/` оставлен только как указатель: всё объединено в **lab-1** (см. [lab-2/README.md](lab-2/README.md)).
+| [**lab-1/**](lab-1/README.md) | Sports Store: FastAPI, PostgreSQL, nginx, Docker **и CI/CD** |
+| [**lab-2/**](lab-2/README.md) | **Копия lab-1** для отдельного репозитория (код + Docker + CI в корне папки) |
+| [**lab-3/**](lab-3/README.md) | Kafka: отзывы (порт **8081**, lab-1 — **8080**) |
 
 ## lab-1: код + Docker + CI
 
@@ -18,10 +17,7 @@
 - `pyproject.toml`, `requirements-dev.txt` — в `lab-1/app/`;
 - шаблоны CI для **отдельного** репозитория — `lab-1/ci/`.
 
-Пайплайн монорепозитория (при push в `lab-1/**`):
-
-- [`.gitlab-ci.yml`](.gitlab-ci.yml)
-- [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+Пайплайн монорепозитория (при push в `lab-1/**`): [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 
 Локально (как в CI):
 
@@ -39,11 +35,11 @@ pytest --cov=src --cov-fail-under=50
 | `demo/ci-fail-lint` | не прошёл **lint** (Ruff) |
 | `demo/ci-fail-coverage` | не хватило **coverage** (&lt; 50%) |
 
-После `git push` приложите ссылки на прогоны GitHub Actions / GitLab Pipelines.
+После `git push` приложите ссылки на прогоны GitHub Actions.
 
-## Отдельный репозиторий для сдачи lab-1
+## Отдельный репозиторий для сдачи (lab-1 + CI)
 
-Скопируйте содержимое `lab-1/` в корень нового репо и положите CI из `lab-1/ci/` — инструкция: [lab-1/ci/README.md](lab-1/ci/README.md).
+Используйте [**lab-2/**](lab-2/README.md): полная копия lab-1, CI — `.github/workflows/ci.yml`. В новый репо — содержимое `lab-2/`, не папку `lab-2` целиком.
 
 ## lab-3 (Kafka)
 

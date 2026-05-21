@@ -1,6 +1,6 @@
-# CI/CD (в составе lab-1)
+# CI/CD (GitHub Actions)
 
-Практическая работа по CI/CD — **часть lab-1**: код, Docker и настройки проверок в одном каталоге.
+Практическая работа по CI/CD — часть **lab-1**: код, Docker и настройки проверок в одном каталоге.
 
 ## Файлы
 
@@ -8,36 +8,16 @@
 |------|------------|
 | `../app/pyproject.toml` | Ruff, pytest, coverage (порог **50%**) |
 | `../app/requirements-dev.txt` | pytest, ruff, httpx, pytest-cov |
-| `gitlab-ci.yml` | Шаблон GitLab CI для **отдельного** репозитория |
-| `github-ci.yml` | Шаблон GitHub Actions для **отдельного** репозитория |
+| `github-ci.yml` | Шаблон workflow для отдельного репозитория |
 
-В монорепозитории `TROD-2026` пайплайны в корне: [`.gitlab-ci.yml`](../../.gitlab-ci.yml), [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml).
+В монорепозитории `TROD-2026`: [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml).
 
-## Отдельный репозиторий (как просил преподаватель)
+## Отдельный репозиторий
 
-Скопируйте **всё содержимое** `lab-1/` в корень нового репозитория:
+Используйте [**lab-2/`**](../lab-2/README.md) — там готовый репозиторий для GitHub с `.github/workflows/ci.yml`.
 
-```text
-<новый-репо>/
-├── app/                    # код + Dockerfile + pyproject.toml + tests
-├── db/
-├── nginx/
-├── docker-compose.yml
-├── .env.example
-├── .gitlab-ci.yml          ← из lab-1/ci/gitlab-ci.yml
-├── .github/workflows/ci.yml ← из lab-1/ci/github-ci.yml
-└── README.md
-```
-
-Секреты CI: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN` (masked).
+Секреты: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`.
 
 ## Демонстрация упавших пайплайнов
 
-Ветки в монорепозитории (запушьте и откройте Actions / Pipelines):
-
-| Ветка | Ожидаемый сбой |
-|-------|----------------|
-| `demo/ci-fail-lint` | job **lint** — ошибка Ruff |
-| `demo/ci-fail-coverage` | job **test** — coverage &lt; 50% |
-
-Ссылки на прогоны добавьте в отчёт после `git push origin demo/ci-fail-lint demo/ci-fail-coverage`.
+Ветки в `TROD-2026`: `demo/ci-fail-lint`, `demo/ci-fail-coverage`.

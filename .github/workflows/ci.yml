@@ -9,7 +9,6 @@ on:
     paths:
       - "lab-1/**"
       - ".github/workflows/ci.yml"
-      - ".gitlab-ci.yml"
   push:
     branches:
       - main
@@ -18,7 +17,6 @@ on:
     paths:
       - "lab-1/**"
       - ".github/workflows/ci.yml"
-      - ".gitlab-ci.yml"
 
 env:
   DOCKER_IMAGE_LOCAL: lab1-app

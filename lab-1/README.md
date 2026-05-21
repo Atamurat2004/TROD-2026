@@ -13,13 +13,13 @@ lab-1/
 │   └── tests/
 ├── db/
 ├── nginx/
-├── ci/                          # шаблоны .gitlab-ci.yml / GitHub Actions
+├── ci/                          # шаблон GitHub Actions
 ├── docker-compose.yml
 ├── .env.example
 └── .gitignore
 ```
 
-**CI/CD** входит в эту же лабораторную: в монорепозитории пайплайн в корне ([`.gitlab-ci.yml`](../.gitlab-ci.yml), [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)). Для отдельного репозитория — см. [ci/README.md](ci/README.md).
+**CI/CD** входит в эту же лабораторную: в монорепозитории — [`.github/workflows/ci.yml`](../.github/workflows/ci.yml). Отдельный репо для сдачи — [lab-2/README.md](../lab-2/README.md).
 
 ## Быстрый старт
 
